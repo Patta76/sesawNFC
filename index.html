@@ -6,7 +6,7 @@
     <title>NFC Reader</title>
 </head>
 <body>
-    <h1>NFC Reader 1</h1>
+    <h1>NFC Reader 2</h1>
     <button id="startScan">Start NFC Scan</button>
     <p id="output">Waiting for NFC tag...</p>
 
@@ -18,28 +18,36 @@
             try {
                 if ('NDEFReader' in window) {
                     const ndef = new NDEFReader();
+                    console.log('NDEFReader supported');
                     await ndef.scan();
                     output.textContent = "NFC scan started. Tap an NFC tag to read.";
+                    console.log('NFC scan started');
 
                     ndef.addEventListener("reading", event => {
+                        console.log('NFC tag detected');
                         const message = event.message;
                         for (const record of message.records) {
                             if (record.recordType === "text") {
                                 const textDecoder = new TextDecoder(record.encoding);
                                 output.textContent = `NFC Tag read: ${textDecoder.decode(record.data)}`;
+                                console.log('NFC Tag read:', textDecoder.decode(record.data));
                             } else {
                                 output.textContent = "NFC Tag read but not in text format.";
+                                console.log('NFC Tag read but not in text format');
                             }
                         }
                     });
 
                     ndef.addEventListener("error", () => {
                         output.textContent = "Error reading NFC tag.";
+                        console.log('Error reading NFC tag');
                     });
                 } else {
                     output.textContent = "NDEFReader is not supported by your browser.";
+                    console.log('NDEFReader is not supported by your browser');
                 }
             } catch (error) {
+                console.log('NFC error:', error);
                 if (error.name === 'NotAllowedError') {
                     output.textContent = "NFC permission request denied. Please ensure that NFC is enabled and the browser has permission to use it.";
                 } else if (error.name === 'NotSupportedError') {
@@ -52,10 +60,6 @@
             }
         }
 
-        startScanButton.addEventListener('click', startNFC);
-    </script>
-</body>
-</html>
         startScanButton.addEventListener('click', startNFC);
     </script>
 </body>
