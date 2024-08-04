@@ -41,7 +41,7 @@
                 }
             } catch (error) {
                 if (error.name === 'NotAllowedError') {
-                    output.textContent = "NFC permission request denied.";
+                    output.textContent = "NFC permission request denied. Please ensure that NFC is enabled and the browser has permission to use it.";
                 } else if (error.name === 'NotSupportedError') {
                     output.textContent = "NFC is not supported by your browser or device.";
                 } else if (error.name === 'InvalidStateError') {
@@ -52,6 +52,10 @@
             }
         }
 
+        startScanButton.addEventListener('click', startNFC);
+    </script>
+</body>
+</html>
         startScanButton.addEventListener('click', startNFC);
     </script>
 </body>
