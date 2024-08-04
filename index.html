@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC Reader</title>
+</head>
+<body>
+    <h1>NFC Reader</h1>
+    <button id="startScan">Start NFC Scan</button>
+    <p id="output">Waiting for NFC tag...</p>
+
+    <script>
+        const output = document.getElementById('output');
+        const startScanButton = document.getElementById('startScan');
+
+        async function startNFC() {
+            try {
+                if ('NDEFReader' in window) {
+                    const ndef = new NDEFReader();
+                    await ndef.scan();
+                    output.textContent = "NFC scan started. Tap an NFC tag to read.";
+
+                    ndef.addEventListener("reading", event => {
+                        const message = event.message;
+                        for (const record of message.records) {
+                            if (record.recordType === "text") {
+                                const textDecoder = new TextDecoder(record.encoding);
+                                output.textContent = `NFC Tag read: ${textDecoder.decode(record.data)}`;
+                            } else {
+                                output.textContent = "NFC Tag read but not in text format.";
+                            }
+                        }
+                    });
+
+                    ndef.addEventListener("error", () => {
+                        output.textContent = "Error reading NFC tag.";
+                    });
+                } else {
+                    output.textContent = "NDEFReader is not supported by your browser.";
+                }
+            } catch (error) {
+                output.textContent = `Error: ${error}`;
+            }
+        }
+
+        startScanButton.addEventListener('click', startNFC);
+    </script>
+</body>
+</html>
