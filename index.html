@@ -40,7 +40,15 @@
                     output.textContent = "NDEFReader is not supported by your browser.";
                 }
             } catch (error) {
-                output.textContent = `Error: ${error}`;
+                if (error.name === 'NotAllowedError') {
+                    output.textContent = "NFC permission request denied.";
+                } else if (error.name === 'NotSupportedError') {
+                    output.textContent = "NFC is not supported by your browser or device.";
+                } else if (error.name === 'InvalidStateError') {
+                    output.textContent = "NFC is currently disabled or unavailable.";
+                } else {
+                    output.textContent = `Error: ${error}`;
+                }
             }
         }
 
